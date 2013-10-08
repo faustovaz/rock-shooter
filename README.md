@@ -23,3 +23,9 @@ To run the game:
 or
 
 </pre></code>$ ./rockshooter.py</pre></code>
+
+Sprites Credits
+===============
+
+All sprites used in Rock shooter were found free and made available by the gamedev.net community members  
+(http://www.gamedev.net)
