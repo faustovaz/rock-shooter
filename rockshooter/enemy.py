@@ -6,7 +6,7 @@ import game
 class Enemy:
 
 	def __init__(self):
-		self.image = pygame.image.load("../images/enemy_1.png")
+		self.image = pygame.image.load("images/enemy_1.png")
 		self.sprites = self._getSpriteSequence()
 		self.position = self.getRandomPosition()
 		self.isVisible = True

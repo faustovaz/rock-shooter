@@ -13,10 +13,11 @@ class Game:
 	timeTick 	= 100
 
 	def __init__(self):
+		print "uhet"
 		pygame.init()
 		pygame.display.set_caption("Rock shooter - v-1.0")
-		self.firstBackgroundImage = pygame.image.load("../images/background.png").convert()
-		self.secondBackgroundImage = pygame.image.load("../images/background.png").convert()
+		self.firstBackgroundImage = pygame.image.load("images/background.png").convert()
+		self.secondBackgroundImage = pygame.image.load("images/background.png").convert()
 		self.firstBackgroundPosition = (0,0) 
 		self.secondBackgroundPosition = (0, (-1) * self.secondBackgroundImage.get_height())
 		self.plane = aircraft.AirCraft()
