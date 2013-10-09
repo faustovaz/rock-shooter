@@ -9,7 +9,7 @@ Screenshot preview:
 <img src="game_screenshot1.png"/>
 
 
-Requirements
+Requirements 
 ============
 
 Python and pygame!
