@@ -13,7 +13,6 @@ class Game:
 	timeTick 	= 100
 
 	def __init__(self):
-		print "uhet"
 		pygame.init()
 		pygame.display.set_caption("Rock shooter - v-1.0")
 		self.firstBackgroundImage = pygame.image.load("images/background.png").convert()
@@ -71,7 +70,7 @@ class Game:
 	def updateEnemies(self):
 		visibleEnemies = []
 		for enemy in self.enemies:	
-			if enemy.visible:
+			if enemy.visible and not enemy.exploded:
 				enemy.move()
 				enemy.draw()
 				visibleEnemies.append(enemy)
@@ -79,7 +78,7 @@ class Game:
 	
 	def _generateEnemies(self):
 		if self.enemyGenerateTime == 0:
-			self.enemyGenerateTime = 50
+			self.enemyGenerateTime = 25
 			self.enemies.append(enemy.Enemy())
 		else:
 			self.enemyGenerateTime = self.enemyGenerateTime - 1;
@@ -87,9 +86,9 @@ class Game:
 	def checkHittedEnemies(self):
 		for bullet in self.plane.bullets:
 			for enemy in self.enemies:
-				if bullet.rect.colliderect(enemy.rect):
+				if bullet.rect.colliderect(enemy.rect) and not enemy.toExplode:
 					bullet.visible = False
-					enemy.explode = True
+					enemy.explode()
 
 
 if __name__ == '__main__':

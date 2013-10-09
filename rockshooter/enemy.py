@@ -12,19 +12,24 @@ class Enemy:
 		self.position = self.getRandomPosition()
 		self.visible = True
 		self.background = pygame.Surface((48, 50)).convert()
-		self.explode = False
+		self.toExplode = False
+		self.exploded = False
 		self.explosionTime = 0
 		self.explosionImage = pygame.image.load("images/enemy_explosion.png")
 		self.explosionSprites = self._getExplosionSpriteSequence()
 		self.rect = pygame.Rect(self.position[0], self.position[1], 48, 50)
 		self.spriteExplosionIndex = 0
 
+	def _isInsideScreen(self):
+		return (self.position[1] + 1 < game.Game.screenSize[1])
+
 	def move(self):
-		if (self.position[1] + 1 < game.Game.screenSize[1]):
+		if  self._isInsideScreen() and (not self.toExplode):
 			self.position = (self.position[0], self.position[1] + 1)
 			self.rect.top, self.rect.left = self.position
 		else:
-			self.visible = False
+			if not self._isInsideScreen():
+				self.visible = False
 
 	def _getSpriteSequence(self):
 		sprites = []
@@ -35,7 +40,7 @@ class Enemy:
 		return sprites
 
 	def draw(self):
-		if not self.explode:
+		if not self.toExplode:
 			game.Game.screen.blit(self.sprites[self.spriteIndex], self.position)
 			self.spriteIndex = self.spriteIndex + 1
 			if self.spriteIndex > 3:
@@ -48,14 +53,19 @@ class Enemy:
 		return (randomX, 0)
 
 	def explodeMe(self):
-		game.Game.screen.blit(self.explosionSprites[self.spriteExplosionIndex], self.position)
-		self.spriteExplosionIndex = self.spriteExplosionIndex + 1
-		print self.spriteExplosionIndex
-		print len(self.explosionSprites)
-		if self.spriteExplosionIndex > 7:
-			self.spriteExplosionIndex = 0
-			self.visible = False
+		if self.explosionTime == 0:
+			self.explosionTime = 2
+			game.Game.screen.blit(self.explosionSprites[self.spriteExplosionIndex], self.position)
+			self.spriteExplosionIndex = self.spriteExplosionIndex + 1
+			if self.spriteExplosionIndex > 7:
+				self.spriteExplosionIndex = 0
+				self.visible = False
+				self.exploded = True
+		else:
+			self.explosionTime = self.explosionTime - 1
 
+	def explode(self):
+		self.toExplode = True
 
 	def _getExplosionSpriteSequence(self):
 		explosionSprites = []
@@ -71,5 +81,5 @@ class Enemy:
 		]
 		for clip in explosionClips:
 			self.explosionImage.set_clip(pygame.Rect(clip[0], clip[1], clip[2], clip[3]))
-			explosionSprites.append(self.explosionImage.subsurface(self.image.get_clip()))
+			explosionSprites.append(self.explosionImage.subsurface(self.explosionImage.get_clip()))
 		return explosionSprites
