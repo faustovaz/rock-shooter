@@ -42,10 +42,11 @@ class Game:
 		while True:
 			self._handleEvents()
 			self._scrollBackground()
-			self.plane.draw()
+			self.checkHittedEnemies()
 			self.plane.updateBullets()
-			self._generateEnemies()
 			self.updateEnemies()
+			self.plane.draw()
+			self._generateEnemies()
 			pygame.display.flip()
 			Game.clock.tick(Game.timeTick)
 
@@ -70,7 +71,7 @@ class Game:
 	def updateEnemies(self):
 		visibleEnemies = []
 		for enemy in self.enemies:	
-			if enemy.isVisible:
+			if enemy.visible:
 				enemy.move()
 				enemy.draw()
 				visibleEnemies.append(enemy)
@@ -82,6 +83,13 @@ class Game:
 			self.enemies.append(enemy.Enemy())
 		else:
 			self.enemyGenerateTime = self.enemyGenerateTime - 1;
+
+	def checkHittedEnemies(self):
+		for bullet in self.plane.bullets:
+			for enemy in self.enemies:
+				if bullet.rect.colliderect(enemy.rect):
+					bullet.visible = False
+					enemy.visible = False
 
 
 if __name__ == '__main__':

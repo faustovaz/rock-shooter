@@ -53,7 +53,7 @@ class AirCraft:
 
 	def _removeUnvisibleBullets(self):
 		visibleBullets = []
-		for index, bullet in enumerate(self.bullets):
+		for bullet in self.bullets:
 			if bullet.isVisible():
 				visibleBullets.append(bullet)
 		self.bullets = visibleBullets		
@@ -65,10 +65,12 @@ class Bullet:
 		self.bulletImage = pygame.image.load("images/bullet.png").convert()
 		self.bulletPosition = (x, y)
 		self.visible = True
+		self.rect = pygame.Rect(x, y, self.bulletImage.get_width(), self.bulletImage.get_height())
 
 	def move(self):
 		bulletPositionY = self.bulletPosition[1] - 20;
 		self.bulletPosition = (self.bulletPosition[0], bulletPositionY)
+		self.rect.top, self.rect.left = self.bulletPosition
 		if (bulletPositionY < 0):
 			self.visible = False	
 

@@ -10,16 +10,18 @@ class Enemy:
 		self.sprites = self._getSpriteSequence()
 		self.spriteIndex = 0
 		self.position = self.getRandomPosition()
-		self.isVisible = True
+		self.visible = True
 		self.background = pygame.Surface((48, 50)).convert()
 		self.explosionImage = pygame.image.load("images/enemy_explosion.png")
 		self.explosionSprites = self._getExplosionSpriteSequence()
+		self.rect = pygame.Rect(self.position[0], self.position[1], 48, 50)
 
 	def move(self):
 		if (self.position[1] + 1 < game.Game.screenSize[1]):
 			self.position = (self.position[0], self.position[1] + 1)
+			self.rect.top, self.rect.left = self.position
 		else:
-			self.isVisible = False
+			self.visible = False
 
 	def _getSpriteSequence(self):
 		sprites = []
@@ -36,7 +38,6 @@ class Enemy:
 			self.spriteIndex = 0
 
 	def getRandomPosition(self):
-
 		randomX = random.randint(10, game.Game.screenSize[0] - 10)
 		return (randomX, 0)
 
