@@ -79,7 +79,7 @@ class Game:
 	
 	def _generateEnemies(self):
 		if self.enemyGenerateTime == 0:
-			self.enemyGenerateTime = 200
+			self.enemyGenerateTime = 50
 			self.enemies.append(enemy.Enemy())
 		else:
 			self.enemyGenerateTime = self.enemyGenerateTime - 1;
@@ -89,7 +89,7 @@ class Game:
 			for enemy in self.enemies:
 				if bullet.rect.colliderect(enemy.rect):
 					bullet.visible = False
-					enemy.visible = False
+					enemy.explode = True
 
 
 if __name__ == '__main__':

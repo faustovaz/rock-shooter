@@ -12,9 +12,12 @@ class Enemy:
 		self.position = self.getRandomPosition()
 		self.visible = True
 		self.background = pygame.Surface((48, 50)).convert()
+		self.explode = False
+		self.explosionTime = 0
 		self.explosionImage = pygame.image.load("images/enemy_explosion.png")
 		self.explosionSprites = self._getExplosionSpriteSequence()
 		self.rect = pygame.Rect(self.position[0], self.position[1], 48, 50)
+		self.spriteExplosionIndex = 0
 
 	def move(self):
 		if (self.position[1] + 1 < game.Game.screenSize[1]):
@@ -32,17 +35,27 @@ class Enemy:
 		return sprites
 
 	def draw(self):
-		game.Game.screen.blit(self.sprites[self.spriteIndex], self.position)
-		self.spriteIndex = self.spriteIndex + 1
-		if self.spriteIndex > 3:
-			self.spriteIndex = 0
+		if not self.explode:
+			game.Game.screen.blit(self.sprites[self.spriteIndex], self.position)
+			self.spriteIndex = self.spriteIndex + 1
+			if self.spriteIndex > 3:
+				self.spriteIndex = 0
+		else:
+			self.explodeMe()
 
 	def getRandomPosition(self):
 		randomX = random.randint(10, game.Game.screenSize[0] - 10)
 		return (randomX, 0)
 
-	def explode(self):
-		pass
+	def explodeMe(self):
+		game.Game.screen.blit(self.explosionSprites[self.spriteExplosionIndex], self.position)
+		self.spriteExplosionIndex = self.spriteExplosionIndex + 1
+		print self.spriteExplosionIndex
+		print len(self.explosionSprites)
+		if self.spriteExplosionIndex > 7:
+			self.spriteExplosionIndex = 0
+			self.visible = False
+
 
 	def _getExplosionSpriteSequence(self):
 		explosionSprites = []
