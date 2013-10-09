@@ -5,7 +5,7 @@ Rock Shooter
 It's a simple 2D shoot game used to study the concepts of 2D games (sprites, animations, scrolling, collisions, etc).
 The main goal of this game is integrate step by step these and other concepts and have fun while learning them!
 
-Screen shot preview:
+Screenshot preview:
 <img src="game_screenshot1.png"/>
 
 
