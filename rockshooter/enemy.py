@@ -57,5 +57,5 @@ class Enemy:
 		]
 		for clip in explosionClips:
 			self.explosionImage.set_clip(pygame.Rect(clip[0], clip[1], clip[2], clip[3]))
-			explosionSprites.append(self.explosionImages.subsurface(self.image.get_clip()))
+			explosionSprites.append(self.explosionImage.subsurface(self.image.get_clip()))
 		return explosionSprites
