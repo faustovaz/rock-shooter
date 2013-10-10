@@ -27,7 +27,7 @@ class Enemy:
 	def move(self):
 		if  self._isInsideScreen() and (not self.toExplode):
 			self.position = (self.position[0], self.position[1] + 1)
-			self.rect.top, self.rect.left = self.position
+			self.rect.left, self.rect.top = self.position
 		else:
 			if not self._isInsideScreen():
 				self.visible = False

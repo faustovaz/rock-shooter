@@ -17,8 +17,8 @@ class AirCraft:
 
 	def draw(self):
 		if not self.toExplode:
+			self.airCraftRect.left, self.airCraftRect.top = self.airCraftPosition
 			game.Game.screen.blit(self.airCraftImage, self.airCraftPosition)
-			self.airCraftRect.top, self.airCraftRect.left = self.airCraftPosition
 		else:
 			self.explodeMe()
 
@@ -109,7 +109,7 @@ class Bullet:
 	def move(self):
 		bulletPositionY = self.bulletPosition[1] - 20;
 		self.bulletPosition = (self.bulletPosition[0], bulletPositionY)
-		self.rect.top, self.rect.left = self.bulletPosition
+		self.rect.left, self.rect.top = self.bulletPosition
 		if (bulletPositionY < 0):
 			self.visible = False	
 
