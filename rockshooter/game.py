@@ -1,4 +1,3 @@
-#Teste
 import pygame
 import sys
 from pygame.locals import *
@@ -39,12 +38,13 @@ class Game:
 		Game.screen.blit(self.secondBackgroundImage, self.secondBackgroundPosition)
 
 	def run(self):
-		while True:
+		while not self.plane.exploded:
 			self._handleEvents()
 			self._scrollBackground()
-			self.checkHittedEnemies()
-			self.plane.updateBullets()
+			self.checkHitEnemies()
+			self.checkHitPlayer()
 			self.updateEnemies()
+			self.plane.updateBullets()
 			self.plane.draw()
 			self._generateEnemies()
 			pygame.display.flip()
@@ -84,12 +84,18 @@ class Game:
 		else:
 			self.enemyGenerateTime = self.enemyGenerateTime - 1;
 
-	def checkHittedEnemies(self):
+	def checkHitEnemies(self):
 		for bullet in self.plane.bullets:
 			for enemy in self.enemies:
 				if bullet.rect.colliderect(enemy.rect) and not enemy.toExplode:
 					bullet.visible = False
 					enemy.explode()
+
+	def checkHitPlayer(self):
+		for enemy in self.enemies:
+			if enemy.visible and self.plane.airCraftRect.colliderect(enemy.rect) and not self.plane.toExplode:
+				enemy.explode()
+				self.plane.explode()
 
 
 if __name__ == '__main__':

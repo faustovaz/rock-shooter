@@ -19,6 +19,7 @@ class Enemy:
 		self.explosionSprites = self._getExplosionSpriteSequence()
 		self.rect = pygame.Rect(self.position[0], self.position[1], 48, 50)
 		self.spriteExplosionIndex = 0
+		self.exploded = False
 
 	def _isInsideScreen(self):
 		return (self.position[1] + 1 < game.Game.screenSize[1])
@@ -49,7 +50,7 @@ class Enemy:
 			self.explodeMe()
 
 	def getRandomPosition(self):
-		randomX = random.randint(10, game.Game.screenSize[0] - 10)
+		randomX = random.randint(50, game.Game.screenSize[0] - 50)
 		return (randomX, 0)
 
 	def explodeMe(self):
