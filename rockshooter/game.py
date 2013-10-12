@@ -15,10 +15,15 @@ class Game:
 	def __init__(self):
 		pygame.init()
 		pygame.display.set_caption("Rock shooter - v-1.0")
-		self.firstBackgroundImage = pygame.image.load("images/background.png").convert()
-		self.secondBackgroundImage = pygame.image.load("images/background.png").convert()
-		self.firstBackgroundPosition = (0,0) 
-		self.secondBackgroundPosition = (0, (-1) * self.secondBackgroundImage.get_height())
+		self.firstBackgroundImage = pygame.image.load("images/background.png").convert_alpha()
+		self.secondBackgroundImage = pygame.image.load("images/background.png").convert_alpha()
+		self.cloudBackgroundImage = pygame.image.load("images/clouds.png").convert_alpha()
+		self.cloudBackgroundImageB = pygame.image.load("images/clouds.png").convert_alpha()
+		self.firstBackgroundPosition = (0, 0) 
+		#self.secondBackgroundPosition = (0, (-1) * self.secondBackgroundImage.get_height())
+		self.secondBackgroundPosition = (0, (-1) * Game.screenSize[1])
+		self.cloudBackgroundPositionA = (0, 0)
+		self.cloudBackgroundPosition = (0, (-1) * self.cloudBackgroundImage.get_height())
 		self.plane = aircraft.AirCraft()
 		self.enemies = []
 		self.enemyGenerateTime = 100
@@ -28,19 +33,29 @@ class Game:
 		secondImageX, secondImageY = self.secondBackgroundPosition
 		firstImageY = firstImageY + 2
 		if (firstImageY > Game.screenSize[1]):
-			firstImageY = self.firstBackgroundImage.get_height() * (-1)
+			firstImageY = Game.screenSize[1] * (-1) + 2
 		secondImageY = secondImageY + 2
 		if (secondImageY > Game.screenSize[1]):
-			secondImageY = self.firstBackgroundImage.get_height() * (-1)
+			secondImageY = Game.screenSize[1] * (-1) + 2
 		self.firstBackgroundPosition = (0, firstImageY)
 		self.secondBackgroundPosition = (0, secondImageY)
+
 		Game.screen.blit(self.firstBackgroundImage, self.firstBackgroundPosition)
 		Game.screen.blit(self.secondBackgroundImage, self.secondBackgroundPosition)
+
+	def _showSomeClouds(self):	
+		cloudImagePositionX, cloudImagePositionY = self.cloudBackgroundPosition
+		cloudImagePositionY = cloudImagePositionY + 10
+		if (cloudImagePositionY > Game.screenSize[1]):
+			cloudImagePositionY = (-1) * self.cloudBackgroundImage.get_height()
+		self.cloudBackgroundPosition = (cloudImagePositionX, cloudImagePositionY)
+		Game.screen.blit(self.cloudBackgroundImage, self.cloudBackgroundPosition)
 
 	def run(self):
 		while not self.plane.exploded:
 			self._handleEvents()
 			self._scrollBackground()
+			self._showSomeClouds()
 			self.checkHitEnemies()
 			self.checkHitPlayer()
 			self.updateEnemies()
