@@ -4,6 +4,7 @@ from pygame.locals import *
 import aircraft
 import random
 import enemy
+from executiontime import ExecutionTime
 
 class Game:
 
@@ -18,28 +19,23 @@ class Game:
 		self.firstBackgroundImage = pygame.image.load("images/background.png").convert_alpha()
 		self.secondBackgroundImage = pygame.image.load("images/background.png").convert_alpha()
 		self.cloudBackgroundImage = pygame.image.load("images/clouds.png").convert_alpha()
-		self.cloudBackgroundImageB = pygame.image.load("images/clouds.png").convert_alpha()
 		self.firstBackgroundPosition = (0, 0) 
-		#self.secondBackgroundPosition = (0, (-1) * self.secondBackgroundImage.get_height())
 		self.secondBackgroundPosition = (0, (-1) * Game.screenSize[1])
-		self.cloudBackgroundPositionA = (0, 0)
 		self.cloudBackgroundPosition = (0, (-1) * self.cloudBackgroundImage.get_height())
 		self.plane = aircraft.AirCraft()
 		self.enemies = []
-		self.enemyGenerateTime = 100
 
 	def _scrollBackground(self):
 		firstImageX, firstImageY = self.firstBackgroundPosition
 		secondImageX, secondImageY = self.secondBackgroundPosition
 		firstImageY = firstImageY + 2
 		if (firstImageY > Game.screenSize[1]):
-			firstImageY = Game.screenSize[1] * (-1) + 2
+			firstImageY = (Game.screenSize[1] * (-1)) + 2
 		secondImageY = secondImageY + 2
 		if (secondImageY > Game.screenSize[1]):
-			secondImageY = Game.screenSize[1] * (-1) + 2
+			secondImageY = (Game.screenSize[1] * (-1)) + 2
 		self.firstBackgroundPosition = (0, firstImageY)
 		self.secondBackgroundPosition = (0, secondImageY)
-
 		Game.screen.blit(self.firstBackgroundImage, self.firstBackgroundPosition)
 		Game.screen.blit(self.secondBackgroundImage, self.secondBackgroundPosition)
 
@@ -92,12 +88,9 @@ class Game:
 				visibleEnemies.append(enemy)
 		self.enemies = visibleEnemies
 	
+	@ExecutionTime(25)
 	def _generateEnemies(self):
-		if self.enemyGenerateTime == 0:
-			self.enemyGenerateTime = 25
-			self.enemies.append(enemy.Enemy())
-		else:
-			self.enemyGenerateTime = self.enemyGenerateTime - 1;
+		self.enemies.append(enemy.Enemy())
 
 	def checkHitEnemies(self):
 		for bullet in self.plane.bullets:
@@ -111,8 +104,3 @@ class Game:
 			if enemy.visible and self.plane.airCraftRect.colliderect(enemy.rect) and not self.plane.toExplode:
 				enemy.explode()
 				self.plane.explode()
-
-
-if __name__ == '__main__':
-	game = Game()
-	game.run()

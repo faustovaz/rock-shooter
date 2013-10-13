@@ -1,6 +1,7 @@
 import pygame
 import random
 import game
+from executiontime import ExecutionTime
 
 
 class Enemy:
@@ -14,12 +15,10 @@ class Enemy:
 		self.background = pygame.Surface((48, 50)).convert()
 		self.toExplode = False
 		self.exploded = False
-		self.explosionTime = 0
 		self.explosionImage = pygame.image.load("images/enemy_explosion.png")
 		self.explosionSprites = self._getExplosionSpriteSequence()
 		self.rect = pygame.Rect(self.position[0], self.position[1], 48, 50)
 		self.spriteExplosionIndex = 0
-		self.exploded = False
 
 	def _isInsideScreen(self):
 		return (self.position[1] + 1 < game.Game.screenSize[1])
@@ -54,16 +53,12 @@ class Enemy:
 		return (randomX, 0)
 
 	def explodeMe(self):
-		if self.explosionTime == 0:
-			self.explosionTime = 2
-			game.Game.screen.blit(self.explosionSprites[self.spriteExplosionIndex], self.position)
-			self.spriteExplosionIndex = self.spriteExplosionIndex + 1
-			if self.spriteExplosionIndex > 7:
-				self.spriteExplosionIndex = 0
-				self.visible = False
-				self.exploded = True
-		else:
-			self.explosionTime = self.explosionTime - 1
+		game.Game.screen.blit(self.explosionSprites[self.spriteExplosionIndex], self.position)
+		self.spriteExplosionIndex = self.spriteExplosionIndex + 1
+		if self.spriteExplosionIndex > 7:
+			self.spriteExplosionIndex = 0
+			self.visible = False
+			self.exploded = True
 
 	def explode(self):
 		self.toExplode = True
