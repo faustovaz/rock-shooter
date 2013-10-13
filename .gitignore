@@ -1,4 +1,5 @@
 .pyc
+images/Thumbs.db
 rockshooter/*.pyc
 rock-shooter.sublime-project
 rock-shooter.sublime-workspace
