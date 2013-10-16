@@ -41,7 +41,7 @@ class Game:
 
 	def _showSomeClouds(self):	
 		cloudImagePositionX, cloudImagePositionY = self.cloudBackgroundPosition
-		cloudImagePositionY = cloudImagePositionY + 10
+		cloudImagePositionY = cloudImagePositionY + 3
 		if (cloudImagePositionY > Game.screenSize[1]):
 			cloudImagePositionY = (-1) * self.cloudBackgroundImage.get_height()
 		self.cloudBackgroundPosition = (cloudImagePositionX, cloudImagePositionY)
