@@ -104,3 +104,45 @@ class Game:
 			if enemy.visible and self.plane.airCraftRect.colliderect(enemy.rect) and not self.plane.toExplode:
 				enemy.explode()
 				self.plane.explode()
+
+	def runMenu(self):
+		menu = Menu()
+		choosenOption = False
+		while not choosenOption:
+			for event in pygame.event.get():
+				if event.type == QUIT:
+					pygame.quit()
+					sys.exit()
+			self._scrollBackground()
+			menu.draw()
+			pygame.display.flip()
+			Game.clock.tick(Game.timeTick)
+
+class Menu:
+	def __init__(self):
+		self.gameTitle = pygame.image.load("images/game_title.png")
+		self.playImages = self._loadPlayImages()
+		self.recordsImages = self._loadRecordsImages()
+		self.exitImages = self._loadExitImages()
+		self.options = [ {"play" : True}, {"records" : False}, {"exit"	: False}]
+
+	def draw(self):
+		Game.screen.blit(self.gameTitle, (120, 50))
+		Game.screen.blit(self.playImages['unselectedImage'], (500, 240))
+		Game.screen.blit(self.recordsImages['unselectedImage'], (500, 320))
+		Game.screen.blit(self.exitImages['unselectedImage'], (500, 410))
+
+	def _loadPlayImages(self):
+		unselectedPlayImage = pygame.image.load("images/unselected_play.png")
+		selectedPlayImage = pygame.image.load("images/selected_play.png")
+		return { "selectedImage" : selectedPlayImage, "unselectedImage" : unselectedPlayImage}
+
+	def _loadRecordsImages(self):
+		unselectedRecordsImage = pygame.image.load("images/unselected_records.png")
+		selectedRecordsImage = pygame.image.load("images/selected_records.png")
+		return {"selectedImage" : selectedRecordsImage, "unselectedImage" : unselectedRecordsImage}
+
+	def _loadExitImages(self):
+		unselectedExitImage = pygame.image.load("images/unselected_exit.png")
+		selectedExitImage = pygame.image.load("images/selected_exit.png")
+		return {"selectedImage" : selectedExitImage, "unselectedImage" : unselectedExitImage}
