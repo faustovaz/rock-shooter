@@ -113,36 +113,67 @@ class Game:
 				if event.type == QUIT:
 					pygame.quit()
 					sys.exit()
+				elif event.type == KEYDOWN:
+					if event.key == K_UP:
+						pass
+					elif event.key == K_DOWN:
+						pass
 			self._scrollBackground()
+			self._showSomeClouds()
 			menu.draw()
 			pygame.display.flip()
 			Game.clock.tick(Game.timeTick)
 
 class Menu:
 	def __init__(self):
-		self.gameTitle = pygame.image.load("images/game_title.png")
+		self.gameTitle = pygame.image.load("images/game_title.png").convert_alpha()
 		self.playImages = self._loadPlayImages()
 		self.recordsImages = self._loadRecordsImages()
 		self.exitImages = self._loadExitImages()
-		self.options = [ {"play" : True}, {"records" : False}, {"exit"	: False}]
+		self.options = {"play" : True, "records" : False, "exit"	: False}
 
-	def draw(self):
-		Game.screen.blit(self.gameTitle, (120, 50))
-		Game.screen.blit(self.playImages['unselectedImage'], (500, 240))
-		Game.screen.blit(self.recordsImages['unselectedImage'], (500, 320))
-		Game.screen.blit(self.exitImages['unselectedImage'], (500, 410))
 
 	def _loadPlayImages(self):
-		unselectedPlayImage = pygame.image.load("images/unselected_play.png")
-		selectedPlayImage = pygame.image.load("images/selected_play.png")
+		unselectedPlayImage = pygame.image.load("images/unselected_play.png").convert_alpha()
+		selectedPlayImage = pygame.image.load("images/selected_play.png").convert_alpha()
 		return { "selectedImage" : selectedPlayImage, "unselectedImage" : unselectedPlayImage}
 
 	def _loadRecordsImages(self):
-		unselectedRecordsImage = pygame.image.load("images/unselected_records.png")
-		selectedRecordsImage = pygame.image.load("images/selected_records.png")
+		unselectedRecordsImage = pygame.image.load("images/unselected_records.png").convert_alpha()
+		selectedRecordsImage = pygame.image.load("images/selected_records.png").convert_alpha()
 		return {"selectedImage" : selectedRecordsImage, "unselectedImage" : unselectedRecordsImage}
 
 	def _loadExitImages(self):
-		unselectedExitImage = pygame.image.load("images/unselected_exit.png")
-		selectedExitImage = pygame.image.load("images/selected_exit.png")
+		unselectedExitImage = pygame.image.load("images/unselected_exit.png").convert_alpha()
+		selectedExitImage = pygame.image.load("images/selected_exit.png").convert_alpha()
 		return {"selectedImage" : selectedExitImage, "unselectedImage" : unselectedExitImage}
+
+	def draw(self):
+		Game.screen.blit(self.gameTitle, (120, 50))
+		self._drawOptionPlay()
+		self._drawOptionRecords()
+		self._drawOptionExit()
+
+	def _drawOptionPlay(self):
+		if self.options["play"]:
+			Game.screen.blit(self.playImages['selectedImage'], (500, 240))
+		else:
+			Game.screen.blit(self.playImages['unselectedImage'], (500, 240))		
+
+	def _drawOptionRecords(self):
+		if self.options['records']:
+			Game.screen.blit(self.recordsImages['selectedImage'], (500, 320))
+		else:
+			Game.screen.blit(self.recordsImages['unselectedImage'], (500, 320))
+
+	def _drawOptionExit(self):
+		if self.options['exit']:
+			Game.screen.blit(self.exitImages['selectedImage'], (500, 410))
+		else:
+			Game.screen.blit(self.exitImages['unselectedImage'], (500, 410))
+
+	def moveDown(self):
+		pass
+
+	def moveUp(self):
+		pass
