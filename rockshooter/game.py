@@ -115,14 +115,26 @@ class Game:
 					sys.exit()
 				elif event.type == KEYDOWN:
 					if event.key == K_UP:
-						pass
+						menu.moveUp()
 					elif event.key == K_DOWN:
-						pass
+						menu.moveDown()
+					elif event.key == K_RETURN:
+						self._handleChosenOption(menu.options)
 			self._scrollBackground()
 			self._showSomeClouds()
 			menu.draw()
 			pygame.display.flip()
 			Game.clock.tick(Game.timeTick)
+
+
+	def _handleChosenOption(self, options):
+		if options['play']:
+			self.run()
+		elif options['records']:
+			pass
+		elif options['exit']:
+			pygame.quit()
+			sys.exit()
 
 class Menu:
 	def __init__(self):
@@ -173,7 +185,24 @@ class Menu:
 			Game.screen.blit(self.exitImages['unselectedImage'], (500, 410))
 
 	def moveDown(self):
-		pass
+		if self.options['play']:
+			self.options['records'] = True
+			self.options['play'] = False
+		elif self.options['records']:
+			self.options['exit'] = True
+			self.options['records'] = False
 
 	def moveUp(self):
-		pass
+		if self.options['exit']:
+			self.options['records'] = True
+			self.options['exit'] = False
+		elif self.options['records']:
+			self.options['play'] = True
+			self.options['records'] = False
+
+	def _updateMenuOption(self):
+		for index, option in enumerate(self.options):
+			if index == self.selectedOption:
+				self.options[option] = True
+			else:
+				self.options[option] = False
