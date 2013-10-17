@@ -130,7 +130,7 @@ class Menu:
 		self.playImages = self._loadPlayImages()
 		self.recordsImages = self._loadRecordsImages()
 		self.exitImages = self._loadExitImages()
-		self.options = {"play" : True, "records" : False, "exit"	: False}
+		self.options = {"play" : True, "records" : False, "exit" : False}
 
 
 	def _loadPlayImages(self):
