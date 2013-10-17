@@ -5,6 +5,7 @@ import aircraft
 import random
 import enemy
 from executiontime import ExecutionTime
+import menu
 
 class Game:
 
@@ -16,6 +17,9 @@ class Game:
 	def __init__(self):
 		pygame.init()
 		pygame.display.set_caption("Rock shooter - v-1.0")
+		self._loadAssets()
+
+	def _loadAssets(self):
 		self.firstBackgroundImage = pygame.image.load("images/background.png").convert_alpha()
 		self.secondBackgroundImage = pygame.image.load("images/background.png").convert_alpha()
 		self.cloudBackgroundImage = pygame.image.load("images/clouds.png").convert_alpha()
@@ -23,7 +27,7 @@ class Game:
 		self.secondBackgroundPosition = (0, (-1) * Game.screenSize[1])
 		self.cloudBackgroundPosition = (0, (-1) * self.cloudBackgroundImage.get_height())
 		self.plane = aircraft.AirCraft()
-		self.enemies = []
+		self.enemies = []		
 
 	def _scrollBackground(self):
 		firstImageX, firstImageY = self.firstBackgroundPosition
@@ -48,6 +52,8 @@ class Game:
 		Game.screen.blit(self.cloudBackgroundImage, self.cloudBackgroundPosition)
 
 	def run(self):
+		if self.plane.exploded:
+			self._loadAssets()
 		while not self.plane.exploded:
 			self._handleEvents()
 			self._scrollBackground()
@@ -106,7 +112,7 @@ class Game:
 				self.plane.explode()
 
 	def runMenu(self):
-		menu = Menu()
+		gameMenu = menu.Menu()
 		choosenOption = False
 		while not choosenOption:
 			for event in pygame.event.get():
@@ -115,14 +121,14 @@ class Game:
 					sys.exit()
 				elif event.type == KEYDOWN:
 					if event.key == K_UP:
-						menu.moveUp()
+						gameMenu.moveUp()
 					elif event.key == K_DOWN:
-						menu.moveDown()
+						gameMenu.moveDown()
 					elif event.key == K_RETURN:
-						self._handleChosenOption(menu.options)
+						self._handleChosenOption(gameMenu.options)
 			self._scrollBackground()
 			self._showSomeClouds()
-			menu.draw()
+			gameMenu.draw()
 			pygame.display.flip()
 			Game.clock.tick(Game.timeTick)
 
@@ -135,74 +141,3 @@ class Game:
 		elif options['exit']:
 			pygame.quit()
 			sys.exit()
-
-class Menu:
-	def __init__(self):
-		self.gameTitle = pygame.image.load("images/game_title.png").convert_alpha()
-		self.playImages = self._loadPlayImages()
-		self.recordsImages = self._loadRecordsImages()
-		self.exitImages = self._loadExitImages()
-		self.options = {"play" : True, "records" : False, "exit" : False}
-
-
-	def _loadPlayImages(self):
-		unselectedPlayImage = pygame.image.load("images/unselected_play.png").convert_alpha()
-		selectedPlayImage = pygame.image.load("images/selected_play.png").convert_alpha()
-		return { "selectedImage" : selectedPlayImage, "unselectedImage" : unselectedPlayImage}
-
-	def _loadRecordsImages(self):
-		unselectedRecordsImage = pygame.image.load("images/unselected_records.png").convert_alpha()
-		selectedRecordsImage = pygame.image.load("images/selected_records.png").convert_alpha()
-		return {"selectedImage" : selectedRecordsImage, "unselectedImage" : unselectedRecordsImage}
-
-	def _loadExitImages(self):
-		unselectedExitImage = pygame.image.load("images/unselected_exit.png").convert_alpha()
-		selectedExitImage = pygame.image.load("images/selected_exit.png").convert_alpha()
-		return {"selectedImage" : selectedExitImage, "unselectedImage" : unselectedExitImage}
-
-	def draw(self):
-		Game.screen.blit(self.gameTitle, (120, 50))
-		self._drawOptionPlay()
-		self._drawOptionRecords()
-		self._drawOptionExit()
-
-	def _drawOptionPlay(self):
-		if self.options["play"]:
-			Game.screen.blit(self.playImages['selectedImage'], (500, 240))
-		else:
-			Game.screen.blit(self.playImages['unselectedImage'], (500, 240))		
-
-	def _drawOptionRecords(self):
-		if self.options['records']:
-			Game.screen.blit(self.recordsImages['selectedImage'], (500, 320))
-		else:
-			Game.screen.blit(self.recordsImages['unselectedImage'], (500, 320))
-
-	def _drawOptionExit(self):
-		if self.options['exit']:
-			Game.screen.blit(self.exitImages['selectedImage'], (500, 410))
-		else:
-			Game.screen.blit(self.exitImages['unselectedImage'], (500, 410))
-
-	def moveDown(self):
-		if self.options['play']:
-			self.options['records'] = True
-			self.options['play'] = False
-		elif self.options['records']:
-			self.options['exit'] = True
-			self.options['records'] = False
-
-	def moveUp(self):
-		if self.options['exit']:
-			self.options['records'] = True
-			self.options['exit'] = False
-		elif self.options['records']:
-			self.options['play'] = True
-			self.options['records'] = False
-
-	def _updateMenuOption(self):
-		for index, option in enumerate(self.options):
-			if index == self.selectedOption:
-				self.options[option] = True
-			else:
-				self.options[option] = False
