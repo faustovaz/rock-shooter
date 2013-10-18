@@ -253,7 +253,9 @@ class Game:
 		if len(records.records) < 5:
 			records.records.update({name : self.scores})
 		else:
-			orderedRecords = sorted(records.records, key=records.records.get, reverse=False)
-			orderedRecords.popitem()
-			orderedRecords.update({str(name) : self.scores})
-			records.records = orderedRecords
+			orderedRecords = {}
+			orderedKeys = sorted(records.records, key=records.records.get, reverse=False)
+			records.records.pop(orderedKeys[0])
+			records.records.update({str(name) : self.scores})
+		with open("rockshooter/records.py", "w") as recordFile:
+			recordFile.write('records = ' + str(records.records))
