@@ -6,6 +6,7 @@ import random
 import enemy
 from executiontime import ExecutionTime
 import menu
+import records
 
 class Game:
 
@@ -137,7 +138,41 @@ class Game:
 		if options['play']:
 			self.run()
 		elif options['records']:
-			pass
+			self.showRecords()
 		elif options['exit']:
 			pygame.quit()
 			sys.exit()
+
+	def showRecords(self):
+		recordFont = pygame.font.Font("fonts/28DaysLater.ttf", 50)
+		factor = 0
+		keepShowingRecords = True
+		recordsReadyToDisplay = []
+		recordTitle = recordFont.render("Records", False, (255, 255, 255))
+		for key, value in records.records.iteritems():
+			player = recordFont.render(str(key), False, (255, 255, 255))
+			points = recordFont.render(str(value), False, (255, 255, 255))
+			recordsReadyToDisplay.append(
+					{	"player" : player, 
+						"points" : points, 
+						"playerPosition" : (260, 150 + factor),
+						"pointsPosition" : (440, 150 + factor)
+					}
+			)
+			factor = factor + 60
+		while keepShowingRecords:
+			for event in pygame.event.get():
+				if event.type == QUIT:
+					pygame.quit()
+					sys.exit()
+				if event.type == KEYDOWN:
+					if event.key == K_ESCAPE:
+						keepShowingRecords = False
+			self._scrollBackground()
+			Game.screen.blit(recordTitle, (330, 50))
+			for recordToDisplay in recordsReadyToDisplay:
+				Game.screen.blit(recordToDisplay['player'], recordToDisplay['playerPosition'])
+				Game.screen.blit(recordToDisplay['points'], recordToDisplay['pointsPosition'])
+			pygame.display.flip()
+			Game.clock.tick(Game.timeTick)
+		self.runMenu()
