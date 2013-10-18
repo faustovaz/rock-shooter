@@ -153,9 +153,10 @@ class Game:
 		keepShowingRecords = True
 		recordsReadyToDisplay = []
 		recordTitle = recordFont.render("Records", False, (255, 255, 255))
-		for key, value in records.records.iteritems():
+		orderedKeys = sorted(records.records, key=records.records.get, reverse=True)
+		for key in orderedKeys:
 			player = recordFont.render(str(key), False, (255, 255, 255))
-			points = recordFont.render(str(value), False, (255, 255, 255))
+			points = recordFont.render(str(records.records.get(key)), False, (255, 255, 255))
 			recordsReadyToDisplay.append(
 					{	"player" : player, 
 						"points" : points, 
@@ -196,4 +197,63 @@ class Game:
 			Game.screen.blit(self.gameOverImage, (170, 160))
 			pygame.display.flip()
 			Game.clock.tick(Game.timeTick)
+		if self.isANewRecord:
+			self.showTypeYourNameMessage()
+			self.readPlayerName()
 		self.runMenu()
+
+	def isANewRecord(self):
+		for key, value in records.records.iteritems():
+			if self.scores > value:
+				return True
+		return False
+
+	def showTypeYourNameMessage(self):
+		pass
+
+	def readPlayerName(self):
+		font = pygame.font.Font("fonts/disinteg.ttf", 50)
+		message = font.render("Type your name: ", True, (255, 255, 255))
+		keepWaitingForThePlayerName = True
+		name = ""
+		playerName = None
+		while keepWaitingForThePlayerName:
+			for event in pygame.event.get():
+				if event.type == QUIT:
+					pygame.quit()
+					sys.exit()
+				elif event.type == KEYDOWN:
+					if event.key == K_ESCAPE:
+						keepWaitingForThePlayerName = False
+					elif event.key == K_RETURN:
+						if len(name):
+							self.updateRecords(name)
+							keepWaitingForThePlayerName = False
+						else:
+							keepWaitingForThePlayerName = False
+					elif event.key == K_BACKSPACE:
+						if len(name) > 0:
+							name = name[0:len(name) - 1]
+							playerName = font.render(name, False, (255, 255, 255))
+					else:
+						key = event.key
+						if (26 < key < 126) and len(name) < 3:
+							name = name + chr(key)
+							playerName = font.render(name, False, (255, 255, 255))
+
+			self._scrollBackground()
+			Game.screen.blit(self.gameOverImage, (170, 160))
+			Game.screen.blit(message, (170, 290))
+			if playerName:
+				Game.screen.blit(playerName, (500, 290))
+			pygame.display.flip()
+			Game.clock.tick(Game.timeTick)
+
+	def updateRecords(self, name):
+		if len(records.records) < 5:
+			records.records.update({name : self.scores})
+		else:
+			orderedRecords = sorted(records.records, key=records.records.get, reverse=False)
+			orderedRecords.popitem()
+			orderedRecords.update({str(name) : self.scores})
+			records.records = orderedRecords
