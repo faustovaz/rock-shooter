@@ -29,6 +29,7 @@ class Game:
 		self.cloudBackgroundPosition = (0, (-1) * self.cloudBackgroundImage.get_height())
 		self.plane = aircraft.AirCraft()
 		self.enemies = []		
+		self.scores = 0
 
 	def _scrollBackground(self):
 		firstImageX, firstImageY = self.firstBackgroundPosition
@@ -105,6 +106,7 @@ class Game:
 				if bullet.rect.colliderect(enemy.rect) and not enemy.toExplode:
 					bullet.visible = False
 					enemy.explode()
+					self.scores = self.scores + 10
 
 	def checkHitPlayer(self):
 		for enemy in self.enemies:
