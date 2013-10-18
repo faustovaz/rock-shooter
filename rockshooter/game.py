@@ -24,6 +24,7 @@ class Game:
 		self.firstBackgroundImage = pygame.image.load("images/background.png").convert_alpha()
 		self.secondBackgroundImage = pygame.image.load("images/background.png").convert_alpha()
 		self.cloudBackgroundImage = pygame.image.load("images/clouds.png").convert_alpha()
+		self.gameOverImage = pygame.image.load("images/gameover.png").convert_alpha()
 		self.firstBackgroundPosition = (0, 0) 
 		self.secondBackgroundPosition = (0, (-1) * Game.screenSize[1])
 		self.cloudBackgroundPosition = (0, (-1) * self.cloudBackgroundImage.get_height())
@@ -68,6 +69,7 @@ class Game:
 			self._generateEnemies()
 			pygame.display.flip()
 			Game.clock.tick(Game.timeTick)
+		self.gameOver()
 
 	def _handleEvents(self):
 			pressed=pygame.key.get_pressed()
@@ -167,7 +169,7 @@ class Game:
 				if event.type == QUIT:
 					pygame.quit()
 					sys.exit()
-				if event.type == KEYDOWN:
+				elif event.type == KEYDOWN:
 					if event.key == K_ESCAPE:
 						keepShowingRecords = False
 			self._scrollBackground()
@@ -175,6 +177,23 @@ class Game:
 			for recordToDisplay in recordsReadyToDisplay:
 				Game.screen.blit(recordToDisplay['player'], recordToDisplay['playerPosition'])
 				Game.screen.blit(recordToDisplay['points'], recordToDisplay['pointsPosition'])
+			pygame.display.flip()
+			Game.clock.tick(Game.timeTick)
+		self.runMenu()
+
+	def gameOver(self):
+		keepShowingGameOverMessage = True
+		while keepShowingGameOverMessage:
+			for event in pygame.event.get():
+				if event.type == QUIT:
+					pygame.quit()
+					sys.exit()
+				elif event.type == KEYDOWN:
+					if event.key == K_ESCAPE:
+						keepShowingGameOverMessage = False
+			self._scrollBackground()
+			self._showSomeClouds()
+			Game.screen.blit(self.gameOverImage, (170, 160))
 			pygame.display.flip()
 			Game.clock.tick(Game.timeTick)
 		self.runMenu()
