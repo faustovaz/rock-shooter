@@ -8,7 +8,6 @@ The main goal of this game is integrate step by step these and other concepts an
 Screenshot preview:
 <img src="game_screenshot0.png"/>
 <img src="game_screenshot1.png"/>
-<img src="game_screenshot2.png"/>
 
 Requirements 
 ============
