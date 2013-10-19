@@ -197,7 +197,7 @@ class Game:
 			Game.screen.blit(self.gameOverImage, (170, 160))
 			pygame.display.flip()
 			Game.clock.tick(Game.timeTick)
-		if self.isANewRecord:
+		if self.isANewRecord() or len(records.records) < 5:
 			self.showTypeYourNameMessage()
 			self.readPlayerName()
 		self.runMenu()
