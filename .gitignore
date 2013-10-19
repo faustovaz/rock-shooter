@@ -1,4 +1,4 @@
-.pyc
+*.pyc
 images/Thumbs.db
 rockshooter/*.pyc
 rockshooter/records.py
