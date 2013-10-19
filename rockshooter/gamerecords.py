@@ -1,1 +1,1 @@
-records = {'uhe': 880, 'jef': 2180, 'ra': 120, 'fau': 130}
+records = {'stu': 1420, 'uhe': 880, 'jef': 2180, 'ra': 120, 'fau': 130}
