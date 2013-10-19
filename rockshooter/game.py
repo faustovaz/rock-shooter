@@ -3,7 +3,7 @@ import sys
 from pygame.locals import *
 import aircraft
 import random
-import enemy
+import spinnerenemy
 from executiontime import ExecutionTime
 import menu
 import gamerecords
@@ -132,7 +132,7 @@ class Game:
 
 	@ExecutionTime(25)
 	def _generateEnemies(self):
-		self.enemies.append(enemy.Enemy())
+		self.enemies.append(spinnerenemy.SpinnerEnemy())
 
 
 	def checkHitEnemies(self):
