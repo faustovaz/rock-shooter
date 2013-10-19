@@ -6,8 +6,9 @@ It's a simple 2D shoot game used to study the concepts of 2D games (sprites, ani
 The main goal of this game is integrate step by step these and other concepts and have fun while learning them!
 
 Screenshot preview:
+<img src="game_screenshot0.png"/>
 <img src="game_screenshot1.png"/>
-
+<img src="game_screenshot2.png"/>
 
 Requirements 
 ============
