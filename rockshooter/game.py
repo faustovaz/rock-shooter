@@ -6,7 +6,7 @@ import random
 import enemy
 from executiontime import ExecutionTime
 import menu
-import records
+import gamerecords
 
 class Game:
 
@@ -18,19 +18,35 @@ class Game:
 	def __init__(self):
 		pygame.init()
 		pygame.display.set_caption("Rock shooter - v-1.0")
-		self._loadAssets()
+		self._loadImages()
+		self._defineImagesPosition()
+		self._loadFonts()
+		self._prepareObjectsForANewGame()
 
-	def _loadAssets(self):
+
+	def _loadImages(self):
 		self.firstBackgroundImage = pygame.image.load("images/background.png").convert_alpha()
 		self.secondBackgroundImage = pygame.image.load("images/background.png").convert_alpha()
 		self.cloudBackgroundImage = pygame.image.load("images/clouds.png").convert_alpha()
 		self.gameOverImage = pygame.image.load("images/gameover.png").convert_alpha()
+
+
+	def _defineImagesPosition(self):
 		self.firstBackgroundPosition = (0, 0) 
 		self.secondBackgroundPosition = (0, (-1) * Game.screenSize[1])
-		self.cloudBackgroundPosition = (0, (-1) * self.cloudBackgroundImage.get_height())
+		self.cloudBackgroundPosition = (0, (-1) * self.cloudBackgroundImage.get_height())				
+
+
+	def _loadFonts(self):
+		self.recordFont = pygame.font.Font("fonts/28DaysLater.ttf", 50)
+		self.enterYourNameFont = pygame.font.Font("fonts/disinteg.ttf", 50)
+
+
+	def _prepareObjectsForANewGame(self):
 		self.plane = aircraft.AirCraft()
-		self.enemies = []		
+		self.enemies = []
 		self.scores = 0
+
 
 	def _scrollBackground(self):
 		firstImageX, firstImageY = self.firstBackgroundPosition
@@ -46,6 +62,7 @@ class Game:
 		Game.screen.blit(self.firstBackgroundImage, self.firstBackgroundPosition)
 		Game.screen.blit(self.secondBackgroundImage, self.secondBackgroundPosition)
 
+
 	def _showSomeClouds(self):	
 		cloudImagePositionX, cloudImagePositionY = self.cloudBackgroundPosition
 		cloudImagePositionY = cloudImagePositionY + 3
@@ -54,9 +71,10 @@ class Game:
 		self.cloudBackgroundPosition = (cloudImagePositionX, cloudImagePositionY)
 		Game.screen.blit(self.cloudBackgroundImage, self.cloudBackgroundPosition)
 
+
 	def run(self):
 		if self.plane.exploded:
-			self._loadAssets()
+			self._prepareObjectsForANewGame()
 		while not self.plane.exploded:
 			self._handleEvents()
 			self._scrollBackground()
@@ -67,9 +85,14 @@ class Game:
 			self.plane.updateBullets()
 			self.plane.draw()
 			self._generateEnemies()
-			pygame.display.flip()
+			self.updateDisplay()
 			Game.clock.tick(Game.timeTick)
 		self.gameOver()
+
+
+	def updateDisplay(self):
+		pygame.display.flip()
+
 
 	def _handleEvents(self):
 			pressed=pygame.key.get_pressed()
@@ -83,11 +106,11 @@ class Game:
 				self.plane.moveDown()
 			for event in pygame.event.get():
 				if event.type == QUIT:
-					pygame.quit()
-					sys.exit()
+					self.quit()
 				elif event.type == KEYDOWN:
 					if event.key == K_SPACE:
 						self.plane.shoot()
+
 
 	def updateEnemies(self):
 		visibleEnemies = []
@@ -98,9 +121,11 @@ class Game:
 				visibleEnemies.append(enemy)
 		self.enemies = visibleEnemies
 	
+
 	@ExecutionTime(25)
 	def _generateEnemies(self):
 		self.enemies.append(enemy.Enemy())
+
 
 	def checkHitEnemies(self):
 		for bullet in self.plane.bullets:
@@ -110,32 +135,34 @@ class Game:
 					enemy.explode()
 					self.scores = self.scores + 10
 
+
 	def checkHitPlayer(self):
 		for enemy in self.enemies:
 			if enemy.visible and self.plane.airCraftRect.colliderect(enemy.rect) and not self.plane.toExplode:
 				enemy.explode()
 				self.plane.explode()
 
+
 	def runMenu(self):
 		gameMenu = menu.Menu()
-		choosenOption = False
-		while not choosenOption:
+		keepShowingMenu = True
+		while keepShowingMenu:
 			for event in pygame.event.get():
 				if event.type == QUIT:
-					pygame.quit()
-					sys.exit()
+					self.quit()
 				elif event.type == KEYDOWN:
 					if event.key == K_UP:
 						gameMenu.moveUp()
 					elif event.key == K_DOWN:
 						gameMenu.moveDown()
 					elif event.key == K_RETURN:
-						self._handleChosenOption(gameMenu.options)
+						keepShowingMenu = False
 			self._scrollBackground()
 			self._showSomeClouds()
 			gameMenu.draw()
-			pygame.display.flip()
+			self.updateDisplay()
 			Game.clock.tick(Game.timeTick)
+		self._handleChosenOption(gameMenu.options)
 
 
 	def _handleChosenOption(self, options):
@@ -144,84 +171,100 @@ class Game:
 		elif options['records']:
 			self.showRecords()
 		elif options['exit']:
-			pygame.quit()
-			sys.exit()
+			self.quit()
+
 
 	def showRecords(self):
-		recordFont = pygame.font.Font("fonts/28DaysLater.ttf", 50)
-		factor = 0
 		keepShowingRecords = True
-		recordsReadyToDisplay = []
-		recordTitle = recordFont.render("Records", False, (255, 255, 255))
-		orderedKeys = sorted(records.records, key=records.records.get, reverse=True)
-		for key in orderedKeys:
-			player = recordFont.render(str(key), False, (255, 255, 255))
-			points = recordFont.render(str(records.records.get(key)), False, (255, 255, 255))
-			recordsReadyToDisplay.append(
-					{	"player" : player, 
-						"points" : points, 
-						"playerPosition" : (260, 150 + factor),
-						"pointsPosition" : (440, 150 + factor)
-					}
-			)
-			factor = factor + 60
+		recordsReadyToDisplay = self.getPlayersRecords()
 		while keepShowingRecords:
 			for event in pygame.event.get():
 				if event.type == QUIT:
-					pygame.quit()
-					sys.exit()
+					self.quit()
 				elif event.type == KEYDOWN:
 					if event.key == K_ESCAPE:
 						keepShowingRecords = False
 			self._scrollBackground()
-			Game.screen.blit(recordTitle, (330, 50))
-			for recordToDisplay in recordsReadyToDisplay:
-				Game.screen.blit(recordToDisplay['player'], recordToDisplay['playerPosition'])
-				Game.screen.blit(recordToDisplay['points'], recordToDisplay['pointsPosition'])
-			pygame.display.flip()
+			self._showSomeClouds()
+			self._drawRecordTitle()
+			self._drawPlayersRecords(recordsReadyToDisplay)
+			self.updateDisplay()
 			Game.clock.tick(Game.timeTick)
 		self.runMenu()
+
+
+	def getPlayersRecords(self):
+		jumpFactor = 0
+		recordsReadyToDisplay = []
+		orderedKeys = sorted(gamerecords.records, key=gamerecords.records.get, reverse=True)
+		for key in orderedKeys:
+			player = self.recordFont.render(str(key), False, (255, 255, 255))
+			points = self.recordFont.render(str(gamerecords.records.get(key)), False, (255, 255, 255))
+			recordsReadyToDisplay.append(
+				{	"player" : player, 
+					"points" : points, 
+					"playerPosition" : (260, 150 + jumpFactor), 
+					"pointsPosition" : (440, 150 + jumpFactor)
+				}
+			)
+			jumpFactor = jumpFactor + 60	
+		return recordsReadyToDisplay	
+
+
+	def _drawPlayersRecords(self, records):
+		for recordToDisplay in records:
+			Game.screen.blit(recordToDisplay['player'], recordToDisplay['playerPosition'])
+			Game.screen.blit(recordToDisplay['points'], recordToDisplay['pointsPosition'])		
+
+
+	def _drawRecordTitle(self):
+		recordTitle = self.recordFont.render("Records", False, (255, 255, 255))
+		Game.screen.blit(recordTitle, (330, 50))		
+
 
 	def gameOver(self):
 		keepShowingGameOverMessage = True
 		while keepShowingGameOverMessage:
 			for event in pygame.event.get():
 				if event.type == QUIT:
-					pygame.quit()
-					sys.exit()
+					self.quit()
 				elif event.type == KEYDOWN:
 					if event.key == K_ESCAPE:
 						keepShowingGameOverMessage = False
 			self._scrollBackground()
 			self._showSomeClouds()
-			Game.screen.blit(self.gameOverImage, (170, 160))
-			pygame.display.flip()
+			self._drawGameOverMessage()
+			self.updateDisplay()
 			Game.clock.tick(Game.timeTick)
-		if self.isANewRecord() or len(records.records) < 5:
-			self.showTypeYourNameMessage()
+		if self.shouldInsertANewRecord():
 			self.readPlayerName()
 		self.runMenu()
 
+
+	def _drawGameOverMessage(self):
+		Game.screen.blit(self.gameOverImage, (170, 160))		
+
+
 	def isANewRecord(self):
-		for key, value in records.records.iteritems():
+		for key, value in gamerecords.records.iteritems():
 			if self.scores > value:
 				return True
 		return False
 
-	def showTypeYourNameMessage(self):
-		pass
+
+	def shouldInsertANewRecord(self):
+		return (self.isANewRecord() or len(gamerecords.records) < 5)
+
 
 	def readPlayerName(self):
-		font = pygame.font.Font("fonts/disinteg.ttf", 50)
-		message = font.render("Type your name: ", True, (255, 255, 255))
+		message = self.enterYourNameFont.render("Type your name: ", True, (255, 255, 255))
 		keepWaitingForThePlayerName = True
 		name = ""
 		playerName = None
 		while keepWaitingForThePlayerName:
 			for event in pygame.event.get():
 				if event.type == QUIT:
-					pygame.quit()
-					sys.exit()
+					self.quit()
 				elif event.type == KEYDOWN:
 					if event.key == K_ESCAPE:
 						keepWaitingForThePlayerName = False
@@ -234,28 +277,31 @@ class Game:
 					elif event.key == K_BACKSPACE:
 						if len(name) > 0:
 							name = name[0:len(name) - 1]
-							playerName = font.render(name, False, (255, 255, 255))
 					else:
 						key = event.key
-						if (26 < key < 126) and len(name) < 3:
+						if (97 <= key <= 122) and len(name) < 3: #Read just 3 chars and chars between a-z
 							name = name + chr(key)
-							playerName = font.render(name, False, (255, 255, 255))
-
+			playerName = self.enterYourNameFont.render(name, False, (255, 255, 255))
 			self._scrollBackground()
-			Game.screen.blit(self.gameOverImage, (170, 160))
+			self._showSomeClouds()
+			self._drawGameOverMessage()
 			Game.screen.blit(message, (170, 290))
-			if playerName:
-				Game.screen.blit(playerName, (500, 290))
-			pygame.display.flip()
+			Game.screen.blit(playerName, (500, 290))
+			self.updateDisplay()
 			Game.clock.tick(Game.timeTick)
 
+
 	def updateRecords(self, name):
-		if len(records.records) < 5:
-			records.records.update({name : self.scores})
+		if len(gamerecords.records) < 5:
+			gamerecords.records.update({name : self.scores})
 		else:
-			orderedRecords = {}
-			orderedKeys = sorted(records.records, key=records.records.get, reverse=False)
-			records.records.pop(orderedKeys[0])
-			records.records.update({str(name) : self.scores})
-		with open("rockshooter/records.py", "w") as recordFile:
-			recordFile.write('records = ' + str(records.records))
+			orderedKeys = sorted(gamerecords.records, key=gamerecords.records.get, reverse=False)
+			gamerecords.records.pop(orderedKeys[0])
+			gamerecords.records.update({str(name) : self.scores})
+		with open("rockshooter/gamerecords.py", "w") as recordFile:
+			recordFile.write('records = ' + str(gamerecords.records))
+
+
+	def quit(self):
+		pygame.quit()
+		sys.exit()		

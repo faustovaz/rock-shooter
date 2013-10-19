@@ -1,0 +1,1 @@
+records = {'tts': 50, 'uhe': 880, 'jef': 1110, 'fau': 130}
