@@ -19,6 +19,7 @@ class Game:
 		pygame.init()
 		pygame.display.set_caption("Rock shooter - v-1.0")
 		self._loadImages()
+		self._loadClouds()
 		self._defineImagesPosition()
 		self._loadFonts()
 		self._prepareObjectsForANewGame()
@@ -29,6 +30,12 @@ class Game:
 		self.secondBackgroundImage = pygame.image.load("images/background.png").convert_alpha()
 		self.cloudBackgroundImage = pygame.image.load("images/clouds.png").convert_alpha()
 		self.gameOverImage = pygame.image.load("images/gameover.png").convert_alpha()
+
+	def _loadClouds(self):
+		self.clouds = []
+		self.clouds.append(pygame.image.load("images/clouds.png").convert_alpha())
+		self.clouds.append(pygame.image.load("images/clouds1.png").convert_alpha())
+		self.clouds.append(pygame.image.load("images/clouds2.png").convert_alpha())
 
 
 	def _defineImagesPosition(self):
@@ -68,6 +75,7 @@ class Game:
 		cloudImagePositionY = cloudImagePositionY + 3
 		if (cloudImagePositionY > Game.screenSize[1]):
 			cloudImagePositionY = (-1) * self.cloudBackgroundImage.get_height()
+			self.cloudBackgroundImage = self.clouds[random.randint(0, 2)]
 		self.cloudBackgroundPosition = (cloudImagePositionX, cloudImagePositionY)
 		Game.screen.blit(self.cloudBackgroundImage, self.cloudBackgroundPosition)
 
