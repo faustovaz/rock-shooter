@@ -16,6 +16,7 @@ class Enemy:
 		self.explosionSprites = self._getExplosionSpriteSequence()
 		self._rect = None
 		self.spriteExplosionIndex = 0
+		self.bullets = []
 
 	def loadImage(self):
 		pass
@@ -27,6 +28,12 @@ class Enemy:
 		pass
 
 	def draw(self):
+		pass
+
+	def shoot(self):
+		pass
+
+	def moveBullets(self):
 		pass
 
 	@property

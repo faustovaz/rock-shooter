@@ -4,6 +4,7 @@ from pygame.locals import *
 import aircraft
 import random
 import spinnerenemy
+import robotenemy
 from executiontime import ExecutionTime
 import menu
 import gamerecords
@@ -125,6 +126,8 @@ class Game:
 		for enemy in self.enemies:	
 			if enemy.visible and not enemy.exploded:
 				enemy.move()
+				enemy.shoot()
+				enemy.moveBullets()
 				enemy.draw()
 				visibleEnemies.append(enemy)
 		self.enemies = visibleEnemies
@@ -133,6 +136,8 @@ class Game:
 	@ExecutionTime(25)
 	def _generateEnemies(self):
 		self.enemies.append(spinnerenemy.SpinnerEnemy())
+		if (random.randint(0,10) > 9):
+			self.enemies.append(robotenemy.RobotEnemy())
 
 
 	def checkHitEnemies(self):
@@ -149,6 +154,11 @@ class Game:
 			if enemy.visible and self.plane.airCraftRect.colliderect(enemy.rect) and not self.plane.toExplode:
 				enemy.explode()
 				self.plane.explode()
+			if len(enemy.bullets):
+				for bullet in enemy.bullets:
+					if bullet.visible and bullet.rect.colliderect(self.plane.airCraftRect) and not self.plane.toExplode:
+						bullet.visible = False
+						self.plane.explode()	
 
 
 	def runMenu(self):
