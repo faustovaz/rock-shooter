@@ -7,46 +7,36 @@ from executiontime import ExecutionTime
 class Enemy:
 
 	def __init__(self):
-		self.image = pygame.image.load("images/enemy_1.png")
-		self.sprites = self._getSpriteSequence()
-		self.spriteIndex = 0
+		self.loadImage()
 		self.position = self.getRandomPosition()
 		self.visible = True
-		self.background = pygame.Surface((48, 50)).convert()
 		self.toExplode = False
 		self.exploded = False
 		self.explosionImage = pygame.image.load("images/enemy_explosion.png")
 		self.explosionSprites = self._getExplosionSpriteSequence()
-		self.rect = pygame.Rect(self.position[0], self.position[1], 48, 50)
+		self._rect = None
 		self.spriteExplosionIndex = 0
 
+	def loadImage(self):
+		pass
+	
 	def _isInsideScreen(self):
 		return (self.position[1] + 1 < game.Game.screenSize[1])
 
 	def move(self):
-		if  self._isInsideScreen() and (not self.toExplode):
-			self.position = (self.position[0], self.position[1] + 1)
-			self.rect.left, self.rect.top = self.position
-		else:
-			if not self._isInsideScreen():
-				self.visible = False
-
-	def _getSpriteSequence(self):
-		sprites = []
-		clips = [ [0, 0, 48, 50], [48, 0, 48, 50], [96, 0, 48, 50], [144, 0, 48, 50] ]
-		for clip in clips:
-			self.image.set_clip(pygame.Rect(clip[0], clip[1],  clip[2], clip[3]))
-			sprites.append(self.image.subsurface(self.image.get_clip()))
-		return sprites
+		pass
 
 	def draw(self):
-		if not self.toExplode:
-			game.Game.screen.blit(self.sprites[self.spriteIndex], self.position)
-			self.spriteIndex = self.spriteIndex + 1
-			if self.spriteIndex > 3:
-				self.spriteIndex = 0
-		else:
-			self.explodeMe()
+		pass
+
+	@property
+	def rect(self):
+		if not self._rect:
+			self._rect = self.getRect()
+		return self._rect
+
+	def getRect(self):
+		pass
 
 	def getRandomPosition(self):
 		randomX = random.randint(50, game.Game.screenSize[0] - 50)
