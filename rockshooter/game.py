@@ -4,10 +4,10 @@ from pygame.locals import *
 import aircraft
 import random
 import spinnerenemy
-import robotenemy
 from executiontime import ExecutionTime
 import menu
 import gamerecords
+from robotenemy import RobotEnemy
 
 class Game:
 
@@ -136,9 +136,16 @@ class Game:
 	@ExecutionTime(25)
 	def _generateEnemies(self):
 		self.enemies.append(spinnerenemy.SpinnerEnemy())
-		if (random.randint(0,10) > 9):
-			self.enemies.append(robotenemy.RobotEnemy())
+		if self.scores > 500:
+			if (random.randint(0,10) > 9) and (self.getNumberOfRobotEnemies() < 3):
+				self.enemies.append(RobotEnemy())
 
+	def getNumberOfRobotEnemies(self):
+		counter = 0
+		for enemy in self.enemies:
+			if isinstance(enemy, RobotEnemy):
+				counter = counter + 1
+		return counter
 
 	def checkHitEnemies(self):
 		for bullet in self.plane.bullets:

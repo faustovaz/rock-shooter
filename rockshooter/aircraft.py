@@ -1,5 +1,6 @@
 import pygame
 import game
+from bullet import Bullet
 
 class AirCraft:
 
@@ -52,7 +53,7 @@ class AirCraft:
 			self.airCraftPosition = (self.airCraftPosition[0], airCraftPositionY)
 
 	def shoot(self):
-		bullet = Bullet(self.airCraftPosition[0] + 30, self.airCraftPosition[1] - 10)
+		bullet = BulletAirCraft(self.airCraftPosition[0] + 30, self.airCraftPosition[1] - 10)
 		bullet.draw()
 		self.bullets.append(bullet)
 
@@ -98,23 +99,20 @@ class AirCraft:
 			self.exploded = True
 
 
-class Bullet:
+class BulletAirCraft(Bullet):
 
 	def __init__(self, x, y):
-		self.bulletImage = pygame.image.load("images/bullet.png").convert()
-		self.bulletPosition = (x, y)
-		self.visible = True
-		self.rect = pygame.Rect(x, y, self.bulletImage.get_width(), self.bulletImage.get_height())
+		Bullet.__init__(self, x, y)
+		
+	def loadImage(self):
+		self.bulletImage = pygame.image.load("images/bullet.png").convert()		
 
 	def move(self):
 		bulletPositionY = self.bulletPosition[1] - 20;
 		self.bulletPosition = (self.bulletPosition[0], bulletPositionY)
 		self.rect.left, self.rect.top = self.bulletPosition
 		if (bulletPositionY < 0):
-			self.visible = False	
+			self.visible = False
 
-	def draw(self):
-		game.Game.screen.blit(self.bulletImage, self.bulletPosition)
-
-	def isVisible(self):
-		return self.visible
+	def getRect(self):
+		self.rect = pygame.Rect(self.bulletPosition[0], self.bulletPosition[1], self.bulletImage.get_width(), self.bulletImage.get_height())					

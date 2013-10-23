@@ -2,6 +2,7 @@ import game
 import enemy
 import pygame
 from executiontime import ExecutionTime
+from bullet import Bullet
 import random
 
 
@@ -9,6 +10,7 @@ class RobotEnemy(enemy.Enemy):
 
 	def __init__(self):
 		enemy.Enemy.__init__(self)
+		self.direction = "moveLeft"
 
 	def loadImage(self):
 		self.image = pygame.image.load("images/enemy_2.png").convert_alpha()
@@ -24,14 +26,17 @@ class RobotEnemy(enemy.Enemy):
 
 	def move(self):
 		if  self._isInsideScreen() and (not self.toExplode):
-			if (random.randint(0,10) % 2 == 0):
+			if (random.randint(0, 10) > 7):
 				self.position = (self.position[0], self.position[1] + 1)
 			else:
-				if (random.randint(0, 10) > 7):
-					self.position = (self.position[0] + 1, self.position[1])
-				else:
+				if self.direction == "moveLeft":
 					self.position = (self.position[0] - 1, self.position[1])
-
+					if self.position[0] == 0:
+						self.direction = "moveRight"
+				elif self.direction == "moveRight":
+					self.position = (self.position[0] + 1, self.position[1])
+					if (self.position[1] + self.image.get_width()) == game.Game.screenSize[1]:
+						self.direction = "moveLeft"
 			self.rect.left, self.rect.top = self.position
 		else:
 			if not self._isInsideScreen():
@@ -52,13 +57,13 @@ class RobotEnemy(enemy.Enemy):
 		self.bullets.append(bulletLeft)
 
 
-class BulletEnemy:
+class BulletEnemy(Bullet):
 
 	def __init__(self, x, y):
-		self.bulletImage = pygame.image.load("images/enemy_2_bullet.png").convert_alpha()
-		self.bulletPosition = (x, y)
-		self.visible = True
-		self.rect = pygame.Rect(x, y, self.bulletImage.get_width(), self.bulletImage.get_height())
+		Bullet.__init__(self, x, y)
+
+	def loadImage(self):
+		self.bulletImage = pygame.image.load("images/enemy_2_bullet.png").convert_alpha()		
 
 	def move(self):
 		bulletPositionY = self.bulletPosition[1] + 10;
@@ -67,8 +72,5 @@ class BulletEnemy:
 		if (bulletPositionY > game.Game.screenSize[1]):
 			self.visible = False	
 
-	def draw(self):
-		game.Game.screen.blit(self.bulletImage, self.bulletPosition)
-
-	def isVisible(self):
-		return self.visible
+	def getRect(self):
+		self.rect = pygame.Rect(self.bulletPosition[0], self.bulletPosition[1], self.bulletImage.get_width(), self.bulletImage.get_height())		
