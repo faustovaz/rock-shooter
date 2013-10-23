@@ -26,29 +26,31 @@ class AirCraft:
 
 	def moveLeft(self):
 		airCraftPositionX = self.airCraftPosition[0] - 5
-		if (airCraftPositionX == 0):
+		if (airCraftPositionX < 0):
 			self.airCraftPosition = (0, self.airCraftPosition[1])
 		else:
 			self.airCraftPosition = (airCraftPositionX, self.airCraftPosition[1])
 
 	def moveRight(self):
+		limitWidth = game.Game.screenSize[0] - self.airCraftImage.get_width()
 		airCraftPositionX = self.airCraftPosition[0] + 5
-		if (airCraftPositionX == game.Game.screenSize[0]):
-			self.airCraftPosition = (self.airCraftPosition[0], self.airCraftPosition[1])
+		if (airCraftPositionX > limitWidth):
+			self.airCraftPosition = (limitWidth, self.airCraftPosition[1])
 		else:
 			self.airCraftPosition = (airCraftPositionX, self.airCraftPosition[1])
 
 	def moveUp(self):
 		airCraftPositionY = self.airCraftPosition[1] - 5
-		if (airCraftPositionY == game.Game.screenSize[1]):
+		if (airCraftPositionY < 0):
 			self.airCraftPosition = (self.airCraftPosition[0], self.airCraftPosition[1])
 		else:
 			self.airCraftPosition = (self.airCraftPosition[0], airCraftPositionY)
 
 	def moveDown(self):
+		limitHeight = game.Game.screenSize[1] - self.airCraftImage.get_height()
 		airCraftPositionY = self.airCraftPosition[1] + 5
-		if (airCraftPositionY == game.Game.screenSize[1]):
-			self.airCraftPosition = (self.airCraftPosition[0], self.airCraftPosition[1])
+		if (airCraftPositionY > limitHeight):
+			self.airCraftPosition = (self.airCraftPosition[0], limitHeight)
 		else:
 			self.airCraftPosition = (self.airCraftPosition[0], airCraftPositionY)
 
