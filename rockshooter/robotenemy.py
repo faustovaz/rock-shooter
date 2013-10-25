@@ -8,9 +8,12 @@ import random
 
 class RobotEnemy(enemy.Enemy):
 
+	MOVE_LEFT  = "moveLeft"
+	MOVE_RIGHT = "moveRight"
+
 	def __init__(self):
 		enemy.Enemy.__init__(self)
-		self.direction = "moveLeft"
+		self.direction = RobotEnemy.MOVE_LEFT
 
 	def loadImage(self):
 		self.image = pygame.image.load("images/enemy_2.png").convert_alpha()
@@ -29,14 +32,14 @@ class RobotEnemy(enemy.Enemy):
 			if (random.randint(0, 10) > 7):
 				self.position = (self.position[0], self.position[1] + 1)
 			else:
-				if self.direction == "moveLeft":
+				if self.direction == RobotEnemy.MOVE_LEFT:
 					self.position = (self.position[0] - 1, self.position[1])
 					if self.position[0] == 0:
-						self.direction = "moveRight"
-				elif self.direction == "moveRight":
+						self.direction = RobotEnemy.MOVE_RIGHT
+				elif self.direction == RobotEnemy.MOVE_RIGHT:
 					self.position = (self.position[0] + 1, self.position[1])
 					if (self.position[1] + self.image.get_width()) == game.Game.screenSize[1]:
-						self.direction = "moveLeft"
+						self.direction = RobotEnemy.MOVE_LEFT
 			self.rect.left, self.rect.top = self.position
 		else:
 			if not self._isInsideScreen():
